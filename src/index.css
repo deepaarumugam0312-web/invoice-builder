@@ -1,0 +1,36 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  @apply bg-slate-100 text-slate-900 antialiased;
+}
+
+* {
+  @apply selection:bg-slate-300 selection:text-slate-900;
+}
+
+/* Global tweaks for better invoice printing and layout */
+@layer utilities {
+  .invoice-table th, .invoice-table td {
+    @apply border-t border-slate-200;
+  }
+}
+
+/* Print: hide everything except the invoice preview element */
+@media print {
+  html, body { background: #fff !important; }
+  body * { visibility: hidden; }
+  #invoice-preview, #invoice-preview * { visibility: visible; }
+  #invoice-preview { position: absolute; left: 0; top: 0; width: 100%; }
+  /* Ensure invoice prints cleanly */
+  .bg-white { background: #fff !important; }
+  .print-hidden, .print\:hidden { display: none !important; }
+  .print\:shadow-none { box-shadow: none !important; }
+  /* Remove default margins for PDF export */
+  @page { margin: 10mm; }
+}
