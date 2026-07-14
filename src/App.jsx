@@ -20,7 +20,16 @@ export default function InvoiceBuilder() {
   };
 
   const updateItem = (id, field, value) => {
-    setItems(items.map((item) => (item.id === id ? { ...item, [field]: value } : item)));
+    const sanitizedValue =
+      field === "qty" || field === "rate"
+        ? Math.max(0, Number(value) || 0)
+        : value;
+
+    setItems(
+      items.map((item) =>
+        item.id === id ? { ...item, [field]: sanitizedValue } : item
+      )
+    );
   };
 
   const subtotal = items.reduce((sum, item) => sum + item.qty * item.rate, 0);
@@ -117,18 +126,20 @@ export default function InvoiceBuilder() {
                 <input
                   type="number"
                   min={0}
+                  step="1"
                   className="w-full border rounded px-2 py-1.5 text-sm text-center focus:outline-none focus:border-blue-400"
                   value={item.qty}
-                  onChange={(e) => updateItem(item.id, "qty", Number(e.target.value))}
+                  onChange={(e) => updateItem(item.id, "qty", e.target.value)}
                 />
               </div>
               <div className="col-span-4 md:col-span-3">
                 <input
                   type="number"
                   min={0}
+                  step="0.01"
                   className="w-full border rounded px-2 py-1.5 text-sm text-center focus:outline-none focus:border-blue-400"
                   value={item.rate}
-                  onChange={(e) => updateItem(item.id, "rate", Number(e.target.value))}
+                  onChange={(e) => updateItem(item.id, "rate", e.target.value)}
                 />
               </div>
               <div className="col-span-3 md:col-span-1 text-right text-sm font-medium text-gray-700">
